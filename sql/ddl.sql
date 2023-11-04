@@ -1,5 +1,5 @@
 -- 创建库
-create database if not exists my_db;
+create database if not exists api_service;
 
 -- 切换库
 use my_db;
