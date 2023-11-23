@@ -3,7 +3,7 @@ package com.kaibai.project.model.dto.interfaceinfo;
 import lombok.Data;
 
 /**
- * @author Renvenz
+ * @author kaibai
  * @date 2023-11-04 16:48
  **/
 @Data
