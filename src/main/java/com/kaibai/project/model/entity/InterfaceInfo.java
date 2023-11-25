@@ -18,7 +18,7 @@ public class InterfaceInfo implements Serializable {
      * 
      */
     @TableId
-    private String id;
+    private Long id;
 
     /**
      * 接口名称
@@ -33,7 +33,7 @@ public class InterfaceInfo implements Serializable {
     /**
      * 接口请求地址
      */
-    private String requestUrl;
+    private String url;
 
     /**
      * 请求头
@@ -46,6 +46,11 @@ public class InterfaceInfo implements Serializable {
     private String responseHeader;
 
     /**
+     * 请求参数
+     */
+    private String requestParams;
+
+    /**
      * 接口状态（0-关闭，1-开启）
      */
     private Integer status;
@@ -53,7 +58,7 @@ public class InterfaceInfo implements Serializable {
     /**
      * 请求人类型
      */
-    private Integer method;
+    private String method;
 
     /**
      * 用户名

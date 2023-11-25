@@ -12,13 +12,13 @@ import java.util.Map;
  * @author kaibai
  * @date 2023-11-06 21:33
  **/
-public class NameClient {
+public class ApiClient {
 
     private String accessKey;
 
     private String secretKey;
 
-    public NameClient(String accessKey, String secretKey) {
+    public ApiClient(String accessKey, String secretKey) {
         this.accessKey = accessKey;
         this.secretKey = secretKey;
     }

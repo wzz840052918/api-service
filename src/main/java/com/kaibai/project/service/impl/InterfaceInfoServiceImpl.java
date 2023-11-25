@@ -28,16 +28,15 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
             }
             String name = interfaceInfo.getName();
             String description = interfaceInfo.getDescription();
-            String requestUrl = interfaceInfo.getRequestUrl();
+            String requestUrl = interfaceInfo.getUrl();
             String requestHeader = interfaceInfo.getRequestHeader();
             String responseHeader = interfaceInfo.getResponseHeader();
-            Integer status = interfaceInfo.getStatus();
-            Integer method = interfaceInfo.getMethod();
-            Long userid = interfaceInfo.getUserid();
+            String method = interfaceInfo.getMethod();
+            // Long userid = interfaceInfo.getUserid();
 
             // 创建时，所有参数必须非空
             if (add) {
-                if (StringUtils.isAnyBlank(name, description, requestUrl, requestHeader, responseHeader) || ObjectUtils.anyNull(status, method, userid)) {
+                if (StringUtils.isAnyBlank(name, description, requestUrl, requestHeader, responseHeader) || ObjectUtils.anyNull(method)) {
                     throw new BusinessException(ErrorCode.PARAMS_ERROR);
                 }
             }

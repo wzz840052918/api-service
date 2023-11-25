@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class InterfaceInfoUpdateRequest {
 
-    private String id;
+    private Long id;
     /**
      * 接口名称
      */
@@ -36,6 +36,11 @@ public class InterfaceInfoUpdateRequest {
     private String responseHeader;
 
     /**
+     * 请求参数
+     */
+    private String requestParams;
+
+    /**
      * 接口状态（0-关闭，1-开启）
      */
     private Integer status;
@@ -43,5 +48,5 @@ public class InterfaceInfoUpdateRequest {
     /**
      * 请求人类型
      */
-    private Integer method;
+    private String method;
 }

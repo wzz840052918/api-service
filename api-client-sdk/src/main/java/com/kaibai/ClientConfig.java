@@ -17,4 +17,5 @@ public class ClientConfig {
     private String accessKey;
 
     private String secretKey;
+
 }
