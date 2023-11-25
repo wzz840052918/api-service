@@ -1,7 +1,11 @@
 package com.kaibai.apiinterface.controller;
 
-import com.kaibai.apiinterface.entity.User;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author kaibai
@@ -11,17 +15,12 @@ import org.springframework.web.bind.annotation.*;
 public class MockController {
 
     @GetMapping("/name")
-    public String getName(@RequestParam String name) {
-        return "Your name is" + name;
+    public String getName(@RequestParam String name, HttpServletRequest httpServletRequest) {
+        return "fuck you";
     }
 
     @PostMapping("/name")
     public String getNameByPost(@RequestParam String name) {
         return "Your name is" + name;
-    }
-
-    @PostMapping("/named")
-    public String getNamed(@RequestBody User user) {
-        return "Your name is" + user.getUsername();
     }
 }

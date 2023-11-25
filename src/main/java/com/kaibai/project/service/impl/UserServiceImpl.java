@@ -7,6 +7,7 @@ import com.kaibai.project.exception.BusinessException;
 import com.kaibai.project.mapper.UserMapper;
 import com.kaibai.project.model.entity.User;
 import com.kaibai.project.service.UserService;
+import com.kaibai.project.utils.UserKeyGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -63,10 +64,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             }
             // 2. 加密
             String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
+            // 2.5. 生成AK/SK
+            String accessKey = UserKeyGenerator.generateAccessKey();
+            String secretKey = UserKeyGenerator.generateSecretKey();
             // 3. 插入数据
             User user = new User();
             user.setUserAccount(userAccount);
             user.setUserPassword(encryptPassword);
+            user.setAccessKey(accessKey);
+            user.setSecretKey(secretKey);
             boolean saveResult = this.save(user);
             if (!saveResult) {
                 throw new BusinessException(ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");
