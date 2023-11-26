@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaibai.project.mapper.UserInterfaceInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.kaibai.project.model.entity.UserInterfaceInfo">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="user_id" column="user_id" jdbcType="BIGINT"/>
+            <result property="interface_info_id" column="interface_info_id" jdbcType="BIGINT"/>
+            <result property="total_num" column="total_num" jdbcType="INTEGER"/>
+            <result property="left_num" column="left_num" jdbcType="INTEGER"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="create_time" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="update_time" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="is_deleted" column="is_deleted" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,interface_info_id,
+        total_num,left_num,status,
+        create_time,update_time,is_deleted
+    </sql>
+</mapper>
