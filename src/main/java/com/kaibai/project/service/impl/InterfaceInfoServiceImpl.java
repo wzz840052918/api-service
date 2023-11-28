@@ -10,6 +10,7 @@ import com.kaibai.project.model.enums.PostReviewStatusEnum;
 import com.kaibai.project.service.InterfaceInfoService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 * @createDate 2023-11-04 16:38:41
 */
 @Service
+@DubboService
 public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, InterfaceInfo>
     implements InterfaceInfoService{
 

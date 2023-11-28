@@ -1,0 +1,17 @@
+server:
+  port: 8090
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: interface_name
+          uri: http://localhost:8888/
+          predicates:
+            - Path=/api/{segment}
+      default-filters:
+        - AddResponseHeader=source, kaibai
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO

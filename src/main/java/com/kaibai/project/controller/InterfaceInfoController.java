@@ -2,7 +2,6 @@ package com.kaibai.project.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.google.gson.Gson;
 import com.kaibai.client.ApiClient;
 import com.kaibai.project.annotation.AuthCheck;
 import com.kaibai.project.common.*;
@@ -14,7 +13,6 @@ import com.kaibai.project.model.dto.interfaceinfo.InterfaceInfoQueryRequest;
 import com.kaibai.project.model.dto.interfaceinfo.InterfaceInfoUpdateRequest;
 import com.kaibai.project.model.dto.interfaceinfo.InterfaceInvokeRequest;
 import com.kaibai.project.model.entity.InterfaceInfo;
-import com.kaibai.project.model.entity.User;
 import com.kaibai.project.service.InterfaceInfoService;
 import com.kaibai.project.service.UserService;
 import lombok.extern.slf4j.Slf4j;

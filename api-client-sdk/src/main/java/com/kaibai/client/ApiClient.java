@@ -24,7 +24,8 @@ public class ApiClient {
     }
 
     public String getName(String name) {
-        return HttpRequest.get("http://localhost:8888/name?name=" + name)
+        System.out.println("fuck");
+        return HttpRequest.get("http://localhost:8090/api/name/?name=" + name)
                 .addHeaders(getRequestHeaderMap())
                 .execute().body();
     }

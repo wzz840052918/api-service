@@ -1,9 +1,6 @@
 package com.kaibai.apiinterface.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -12,9 +9,10 @@ import javax.servlet.http.HttpServletRequest;
  * @date 2023-11-06 20:57
  **/
 @RestController
+@RequestMapping("/name")
 public class MockController {
 
-    @GetMapping("/name")
+    @GetMapping("/")
     public String getName(@RequestParam String name, HttpServletRequest httpServletRequest) {
         return "fuck you";
     }
