@@ -3,6 +3,8 @@ package com.kaibai.project.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kaibai.client.ApiClient;
+import com.kaibai.entity.InterfaceInfo;
+import com.kaibai.entity.User;
 import com.kaibai.project.annotation.AuthCheck;
 import com.kaibai.project.common.*;
 import com.kaibai.project.constant.CommonConstant;
@@ -12,7 +14,6 @@ import com.kaibai.project.model.dto.interfaceinfo.InterfaceInfoAddRequest;
 import com.kaibai.project.model.dto.interfaceinfo.InterfaceInfoQueryRequest;
 import com.kaibai.project.model.dto.interfaceinfo.InterfaceInfoUpdateRequest;
 import com.kaibai.project.model.dto.interfaceinfo.InterfaceInvokeRequest;
-import com.kaibai.project.model.entity.InterfaceInfo;
 import com.kaibai.project.service.InterfaceInfoService;
 import com.kaibai.project.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -269,13 +270,12 @@ public class InterfaceInfoController {
 
         // 在线调用接口也需要进行登录
         // 在线调用默认给50次数，调用者将以自己的AK和SK进行调用
-//        User loginUser = userService.getLoginUser(request);
-//        String accessKey = loginUser.getAccessKey();
-//        String secretKey = loginUser.getSecretKey();
-        // 校验AK\SK
+        User loginUser = userService.getLoginUser(request);
+        String accessKey = loginUser.getAccessKey();
+        String secretKey = loginUser.getSecretKey();
 
         // TODO 如何通过接口id获取接口信息，并进行调用， ip如何配置
-        ApiClient client = new ApiClient("accessKey", "secretKey");
+        ApiClient client = new ApiClient(accessKey, secretKey);
         Object aaa = client.getName("aaa");
         return ResultUtils.success(aaa);
     }

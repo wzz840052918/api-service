@@ -1,6 +1,5 @@
 package com.kaibai.project.service;
 
-import com.kaibai.project.model.entity.InterfaceInfo;
 import com.kaibai.project.model.entity.UserInterfaceInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 

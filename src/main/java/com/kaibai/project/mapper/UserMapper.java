@@ -1,7 +1,7 @@
 package com.kaibai.project.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.kaibai.project.model.entity.User;
+import com.kaibai.entity.User;
 
 /**
  * @Entity com.kaibai.project.model.domain.User

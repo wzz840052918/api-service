@@ -15,3 +15,12 @@ spring:
 logging:
   level:
     org.springframework.cloud.gateway: INFO
+
+dubbo:
+  application:
+    name: api-gateway-consumer
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: nacos://localhost:8848?username=nacos&password=nacos

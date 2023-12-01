@@ -1,4 +1,4 @@
-package com.kaibai.project.model.entity;
+package com.kaibai.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

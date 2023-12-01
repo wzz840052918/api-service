@@ -1,8 +1,14 @@
 package com.kaibai.filter;
 
 import cn.hutool.core.util.StrUtil;
+import com.kaibai.entity.InterfaceInfo;
+import com.kaibai.entity.User;
+import com.kaibai.service.InnerInterfaceInfoService;
+import com.kaibai.service.InnerInterfaceInfoUserService;
+import com.kaibai.service.InnerUserService;
 import com.kaibai.utils.SignUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.reactivestreams.Publisher;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -39,11 +45,22 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
 
     private static final long FIVE_MINUTES = 60 * 5L;
 
+    @DubboReference
+    private InnerInterfaceInfoService interfaceInfoService;
+
+    @DubboReference
+    private InnerUserService userService;
+
+    @DubboReference
+    private InnerInterfaceInfoUserService interfaceInfoUserService;
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         // 1. 记录请求日志
         ServerHttpRequest request = exchange.getRequest();
-        log.info("请求唯一标识：{}, 请求路径：{}, 请求方法：{}, 请求参数：{}, 请求来源地址：{}", request.getId(), request.getPath().value(), request.getMethod(), request.getQueryParams(), request.getRemoteAddress().getHostString());
+        String method = request.getMethod().toString();
+        String path = request.getPath().value();
+        log.info("请求唯一标识：{}, 请求路径：{}, 请求方法：{}, 请求参数：{}, 请求来源地址：{}", request.getId(), path, method, request.getQueryParams(), request.getRemoteAddress().getHostString());
         // 2. 访问控制-黑白名单处理
         ServerHttpResponse response = exchange.getResponse();
         if (!IP_WHITE_LIST.contains(exchange.getRequest().getLocalAddress().getHostString())) {
@@ -60,8 +77,8 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         if (Objects.isNull(accessKey) || Objects.isNull(nonce) || Objects.isNull(timestamp) || Objects.isNull(sign)) {
             return handleNoAuth(response);
         }
-        // 3.1 验证accessKey的正确性 todo 远程调用 数据库操作
-
+        // 3.1 验证accessKey的正确性
+        User invokeUser = userService.getInvokeUser(accessKey);
         // 3.2 验证timestamp是否超期
         long currentTimeMillis = System.currentTimeMillis() / 1000;
         if (currentTimeMillis - Long.parseLong(timestamp) > FIVE_MINUTES) {
@@ -73,25 +90,33 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         }
 
         // 3.4 验证签名的正确性
-        String checkSign = SignUtil.generateSign("secretKey");
+        String checkSign = SignUtil.generateSign(invokeUser.getSecretKey());
         if (!StrUtil.equals(sign, checkSign)) {
             return handleNoAuth(response);
         }
-        // 4. 接口是否存在？  todo RPC远程调用数据库操作
-
+        // 4. 接口是否存在？
+        InterfaceInfo interfaceInfo = null;
+        try {
+            interfaceInfo = interfaceInfoService.getInterfaceInfo("http://localhost:7529/api/interfaceInfo/name", method);
+        } catch (Exception e) {
+            log.error("获取接口信息失败，", e);
+        }
         // 5. 请求转发
         chain.filter(exchange);
         // 6. 记录响应日志
-        return handleResponse(exchange, chain);
+        return handleResponse(exchange, chain, interfaceInfo.getId(), invokeUser.getId());
     }
 
     /**
      * 使用Spring提供的HttpResponse装饰器进行增强
+     *
      * @param exchange
      * @param chain
+     * @param interfaceId
+     * @param invokeUserId
      * @return
      */
-    private Mono<Void> handleResponse(ServerWebExchange exchange, GatewayFilterChain chain) {
+    private Mono<Void> handleResponse(ServerWebExchange exchange, GatewayFilterChain chain, Long interfaceId, Long invokeUserId) {
         try {
             ServerHttpResponse originalResponse = exchange.getResponse();
             DataBufferFactory bufferFactory = originalResponse.bufferFactory();
@@ -106,8 +131,8 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
                         if (body instanceof Flux) {
                             Flux<? extends DataBuffer> fluxBody = Flux.from(body);
                             return super.writeWith(fluxBody.map(dataBuffer -> {
-                                // 7. 调用成功，接口调用次数 + 1 TODO 远程调用
-
+                                // 7. 调用成功，接口调用次数 + 1
+                                interfaceInfoUserService.invokeCount(interfaceId, invokeUserId);
                                 // 8. 调用失败，返回一个错误码
                                 originalResponse.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
                                 originalResponse.setComplete();

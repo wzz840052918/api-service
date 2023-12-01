@@ -4,11 +4,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kaibai.project.mapper.InterfaceInfoMapper">
 
-    <resultMap id="BaseResultMap" type="com.kaibai.project.model.entity.InterfaceInfo">
+    <resultMap id="BaseResultMap" type="com.kaibai.entity.InterfaceInfo">
             <id property="id" column="id" jdbcType="VARCHAR"/>
             <result property="name" column="name" jdbcType="VARCHAR"/>
             <result property="description" column="description" jdbcType="VARCHAR"/>
-            <result property="requestUrl" column="request_url" jdbcType="VARCHAR"/>
+            <result property="url" column="url" jdbcType="VARCHAR"/>
             <result property="requestHeader" column="request_header" jdbcType="VARCHAR"/>
             <result property="responseHeader" column="response_header" jdbcType="VARCHAR"/>
             <result property="status" column="status" jdbcType="INTEGER"/>
@@ -21,7 +21,7 @@
 
     <sql id="Base_Column_List">
         id,name,description,
-        request_url,request_header,response_header,
+        url,request_header,response_header,
         status,method,userId,
         create_time,update_time,is_deleted
     </sql>

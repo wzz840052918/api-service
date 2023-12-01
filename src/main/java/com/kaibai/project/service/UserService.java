@@ -1,8 +1,9 @@
 package com.kaibai.project.service;
 
 
+
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.kaibai.project.model.entity.User;
+import com.kaibai.entity.User;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -56,4 +57,10 @@ public interface UserService extends IService<User> {
      * @return
      */
     boolean userLogout(HttpServletRequest request);
+
+    /**
+     * 通过accesskey获取用户信息
+     * @param accessKey
+     */
+    User getUserByAccessKey(String accessKey);
 }

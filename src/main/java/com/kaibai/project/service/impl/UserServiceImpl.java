@@ -2,14 +2,15 @@ package com.kaibai.project.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.kaibai.entity.User;
 import com.kaibai.project.common.ErrorCode;
 import com.kaibai.project.exception.BusinessException;
 import com.kaibai.project.mapper.UserMapper;
-import com.kaibai.project.model.entity.User;
 import com.kaibai.project.service.UserService;
 import com.kaibai.project.utils.UserKeyGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -160,6 +161,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         // 移除登录态
         request.getSession().removeAttribute(USER_LOGIN_STATE);
         return true;
+    }
+
+    @Override
+    public User getUserByAccessKey(String accessKey) {
+        if (StringUtils.isEmpty(accessKey)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("access_key", accessKey);
+        return getOne(queryWrapper);
     }
 
 }

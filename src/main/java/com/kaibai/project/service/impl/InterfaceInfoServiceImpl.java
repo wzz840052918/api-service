@@ -1,16 +1,14 @@
 package com.kaibai.project.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.kaibai.entity.InterfaceInfo;
 import com.kaibai.project.common.ErrorCode;
 import com.kaibai.project.exception.BusinessException;
 import com.kaibai.project.mapper.InterfaceInfoMapper;
-import com.kaibai.project.model.entity.InterfaceInfo;
-import com.kaibai.project.model.enums.PostGenderEnum;
-import com.kaibai.project.model.enums.PostReviewStatusEnum;
 import com.kaibai.project.service.InterfaceInfoService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,7 +17,6 @@ import org.springframework.stereotype.Service;
 * @createDate 2023-11-04 16:38:41
 */
 @Service
-@DubboService
 public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, InterfaceInfo>
     implements InterfaceInfoService{
 
@@ -45,6 +42,17 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
             if (StringUtils.isNotBlank(name) && name.length() > 8192) {
                 throw new BusinessException(ErrorCode.PARAMS_ERROR, "内容过长");
             }
+    }
+
+    @Override
+    public InterfaceInfo getInterfaceInfoByPathAndMethod(String url, String method) {
+        if (StringUtils.isAnyBlank(url, method)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        QueryWrapper<InterfaceInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("url", url);
+        queryWrapper.eq("method", method);
+        return this.baseMapper.selectOne(queryWrapper);
     }
 }
 

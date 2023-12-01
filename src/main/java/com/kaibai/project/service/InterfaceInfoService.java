@@ -1,7 +1,8 @@
 package com.kaibai.project.service;
 
-import com.kaibai.project.model.entity.InterfaceInfo;
+
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kaibai.entity.InterfaceInfo;
 
 /**
 * @author wangzhuangzhuang
@@ -16,4 +17,6 @@ public interface InterfaceInfoService extends IService<InterfaceInfo> {
      * @param condition 条件
      */
     void validInterfaceInfo(InterfaceInfo interfaceInfo, boolean condition);
+
+    InterfaceInfo getInterfaceInfoByPathAndMethod(String path, String method);
 }

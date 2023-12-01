@@ -14,6 +14,7 @@ public class MockController {
 
     @GetMapping("/")
     public String getName(@RequestParam String name, HttpServletRequest httpServletRequest) {
+        System.out.println("请求");
         return "fuck you";
     }
 
