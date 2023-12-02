@@ -1,6 +1,6 @@
 package com.kaibai.project.service;
 
-import com.kaibai.project.model.entity.User;
+import com.kaibai.entity.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
