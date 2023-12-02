@@ -1,5 +1,6 @@
 package com.kaibai.project.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kaibai.project.common.ErrorCode;
@@ -49,6 +50,25 @@ public class UserInterfaceInfoServiceImpl extends ServiceImpl<UserInterfaceInfoM
 
         updateWrapper.setSql("left_num = left_num - 1, total_num = total_num + 1");
         return update(updateWrapper);
+    }
+
+    @Override
+    public int queryRemaining(Long interfaceId, Long userId) {
+        if(ObjectUtils.anyNull(interfaceId, userId)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        QueryWrapper<UserInterfaceInfo> queryWrapper = new QueryWrapper<>();
+
+        queryWrapper.lambda().eq(UserInterfaceInfo::getInterfaceInfoId, interfaceId)
+                .eq(UserInterfaceInfo::getUserId, userId);
+
+        UserInterfaceInfo userInterfaceInfo = this.baseMapper.selectOne(queryWrapper);
+
+        if (ObjectUtils.isEmpty(userInterfaceInfo)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+
+        return userInterfaceInfo.getLeftNum();
     }
 }
 

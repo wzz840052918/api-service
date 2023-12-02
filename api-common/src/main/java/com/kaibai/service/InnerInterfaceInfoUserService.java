@@ -10,4 +10,6 @@ import org.springframework.stereotype.Component;
 public interface InnerInterfaceInfoUserService {
 
     void invokeCount(Long interfaceId, Long userId);
+
+    int remaining(Long interfaceId, Long userId);
 }

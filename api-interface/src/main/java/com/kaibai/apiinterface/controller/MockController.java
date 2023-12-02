@@ -9,11 +9,10 @@ import javax.servlet.http.HttpServletRequest;
  * @date 2023-11-06 20:57
  **/
 @RestController
-@RequestMapping("/name")
 public class MockController {
 
-    @GetMapping("/")
-    public String getName(@RequestParam String name, HttpServletRequest httpServletRequest) {
+    @GetMapping("/name")
+    public String getName(HttpServletRequest httpServletRequest) {
         System.out.println("请求");
         return "fuck you";
     }

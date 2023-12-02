@@ -20,4 +20,15 @@ public class InnerInterfaceUserServiceImpl implements InnerInterfaceInfoUserServ
     public void invokeCount(Long interfaceId, Long userId) {
         userInterfaceInfoService.invokeCount(interfaceId, userId);
     }
+
+    /**
+     * 查询当前用户的当前接口剩余调用次数
+     * @param interfaceId 接口id
+     * @param userId 用户id
+     * @return 剩余次数
+     */
+    @Override
+    public int remaining(Long interfaceId, Long userId) {
+        return userInterfaceInfoService.queryRemaining(interfaceId, userId);
+    }
 }

@@ -6,7 +6,7 @@ spring:
     gateway:
       routes:
         - id: interface_name
-          uri: http://localhost:8888/
+          uri: http://localhost:8888
           predicates:
             - Path=/api/{segment}
       default-filters:

@@ -45,6 +45,8 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
 
     private static final long FIVE_MINUTES = 60 * 5L;
 
+    private static final String HOST = "http://localhost:8090";
+
     @DubboReference
     private InnerInterfaceInfoService interfaceInfoService;
 
@@ -96,14 +98,19 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         }
         // 4. 接口是否存在？
         InterfaceInfo interfaceInfo = null;
+        int remaining = 0;
         try {
-            interfaceInfo = interfaceInfoService.getInterfaceInfo("http://localhost:7529/api/interfaceInfo/name", method);
+            interfaceInfo = interfaceInfoService.getInterfaceInfo(HOST + path, method);
+            // 判断当前用户当前是否还有剩余调用次数
+            remaining = interfaceInfoUserService.remaining(interfaceInfo.getId(), invokeUser.getId());
         } catch (Exception e) {
             log.error("获取接口信息失败，", e);
         }
-        // 5. 请求转发
+        if (remaining <= 0) {
+            return handleNoAuth(response);
+        }
+        // 5. 记录响应日志
         chain.filter(exchange);
-        // 6. 记录响应日志
         return handleResponse(exchange, chain, interfaceInfo.getId(), invokeUser.getId());
     }
 
@@ -127,22 +134,19 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
                 ServerHttpResponseDecorator decoratedResponse = new ServerHttpResponseDecorator(originalResponse) {
                     @Override
                     public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
-                        //log.info("body instanceof Flux: {}", (body instanceof Flux));
                         if (body instanceof Flux) {
                             Flux<? extends DataBuffer> fluxBody = Flux.from(body);
                             return super.writeWith(fluxBody.map(dataBuffer -> {
                                 // 7. 调用成功，接口调用次数 + 1
-                                interfaceInfoUserService.invokeCount(interfaceId, invokeUserId);
-                                // 8. 调用失败，返回一个错误码
-                                originalResponse.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
-                                originalResponse.setComplete();
-
+                                try {
+                                    interfaceInfoUserService.invokeCount(interfaceId, invokeUserId);
+                                } catch (Exception e) {
+                                    log.error("调用失败，错误信息:", e);
+                                }
                                 byte[] content = new byte[dataBuffer.readableByteCount()];
                                 dataBuffer.read(content);
-                                DataBufferUtils.release(dataBuffer);//释放掉内存
-                                List<Object> rspArgs = new ArrayList<>();
-                                rspArgs.add(originalResponse.getStatusCode());
-                                String data = new String(content, StandardCharsets.UTF_8);//data
+                                DataBufferUtils.release(dataBuffer);
+                                String data = new String(content, StandardCharsets.UTF_8);
                                 log.info("记录响应结果: {}", data);
                                 return bufferFactory.wrap(content);
                             }));
@@ -163,9 +167,17 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
 
     @Override
     public int getOrder() {
-        return -1;
+        // 当此过滤器的优先级小于 NettyWriteResponseFilter的优先级时，会导致请求没有最终返回
+        // 但是按照官网文档来说  It runs after all other filters have completed and writes the proxy response back to the gateway client response
+        // DEBUG时也确定 NettyWriteResponseFilter 是最后执行的，但就是没有返回
+        return -2;
     }
 
+    /**
+     * 无权限或者物调用次数处理
+     * @param response
+     * @return
+     */
     private Mono<Void> handleNoAuth(ServerHttpResponse response) {
         response.setStatusCode(HttpStatus.FORBIDDEN);
         return response.setComplete();

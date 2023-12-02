@@ -18,21 +18,17 @@ public class ApiClient {
 
     private String secretKey;
 
+    private final String HOST = "http://localhost:8090";
+
     public ApiClient(String accessKey, String secretKey) {
         this.accessKey = accessKey;
         this.secretKey = secretKey;
     }
 
     public String getName(String name) {
-        System.out.println("fuck");
-        return HttpRequest.get("http://localhost:8090/api/name/?name=" + name)
+        return HttpRequest.get(HOST + "/api/name?name=" + name)
                 .addHeaders(getRequestHeaderMap())
                 .execute().body();
-    }
-
-    public String getNameByPost(String name) {
-        String myname = HttpUtil.post("http://localhost:8888/name", name);
-        return myname;
     }
 
     private Map<String, String> getRequestHeaderMap() {
