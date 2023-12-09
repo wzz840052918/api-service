@@ -63,4 +63,14 @@ public interface UserService extends IService<User> {
      * @param accessKey
      */
     User getUserByAccessKey(String accessKey);
+
+    /**
+     * 重新生成AK/SK
+     * @param userAccount
+     * @param userPassword
+     * @param checkPassword
+     * @param validCode
+     * @return
+     */
+    long reSign(String userAccount, String userPassword, String checkPassword, String validCode);
 }

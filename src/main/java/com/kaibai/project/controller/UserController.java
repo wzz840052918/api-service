@@ -56,6 +56,23 @@ public class UserController {
         return ResultUtils.success(result);
     }
 
+    @PostMapping("/resign")
+    public BaseResponse<Long> reSign(@RequestBody UserReSignRequest reSignRequest) {
+        if (reSignRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        String userAccount = reSignRequest.getUserAccount();
+        String userPassword = reSignRequest.getUserPassword();
+        String checkPassword = reSignRequest.getCheckPassword();
+        String validCode = reSignRequest.getValidCode();
+
+        if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword, validCode)) {
+            return null;
+        }
+        long result = userService.reSign(userAccount, userPassword, checkPassword, validCode);
+        return ResultUtils.success(result);
+    }
+
     /**
      * 用户登录
      *
