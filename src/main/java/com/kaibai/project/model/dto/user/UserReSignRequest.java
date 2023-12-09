@@ -15,6 +15,12 @@ public class UserReSignRequest implements Serializable {
 
     private String userAccount;
 
+    /**
+     * 邮箱
+     */
+    private String email;
+
+
     private String userPassword;
 
     private String checkPassword;

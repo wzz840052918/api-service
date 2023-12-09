@@ -17,8 +17,15 @@ spring:
   # redis 配置
   redis:
     port: 6379
-    host: 192.168.60.129
+    host: 192.168.31.100
     database: 0
+    password: 123456
+  mail:
+    host: smtp.163.com
+    username: wangzz2022@163.com
+    password: MOQQPMBZYFUFXXHC #开启POP3之后设置的客户端授权码
+    protocol: smtp
+    default-encoding: UTF-8
 server:
   port: 7529
   servlet:
@@ -41,3 +48,8 @@ dubbo:
     port: -1
   registry:
     address: nacos://localhost:8848?username=nacos&password=nacos
+
+verify:
+  code:
+    email: 300 # 邮箱验证码默认有效期时间
+    phone: 600 # 手机验证码默认有效期时间
