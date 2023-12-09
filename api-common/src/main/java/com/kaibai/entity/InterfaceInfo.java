@@ -9,7 +9,11 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 存放接口信息
@@ -39,6 +43,21 @@ public class InterfaceInfo implements Serializable {
      * 接口请求地址
      */
     private String url;
+
+    /**
+     * host
+     */
+    private String host;
+
+    /**
+     * 端口号
+     */
+    private String port;
+
+    /**
+     * 路径
+     */
+    private String path;
 
     /**
      * 请求头
@@ -88,4 +107,11 @@ public class InterfaceInfo implements Serializable {
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
+    public void splitUrl() throws MalformedURLException {
+        URL bettwerUrl = new URL(url);
+        host = bettwerUrl.getHost();
+        port = String.valueOf(bettwerUrl.getPort());
+        path = bettwerUrl.getPath();
+    }
 }

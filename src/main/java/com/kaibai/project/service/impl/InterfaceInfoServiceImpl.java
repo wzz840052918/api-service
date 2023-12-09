@@ -11,37 +11,53 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
-* @author wangzhuangzhuang
-* @description 针对表【interface_info(存放接口信息)】的数据库操作Service实现
-* @createDate 2023-11-04 16:38:41
-*/
+ * @author wangzhuangzhuang
+ * @description 针对表【interface_info(存放接口信息)】的数据库操作Service实现
+ * @createDate 2023-11-04 16:38:41
+ */
 @Service
 public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, InterfaceInfo>
-    implements InterfaceInfoService{
+        implements InterfaceInfoService {
 
     @Override
     public void validInterfaceInfo(InterfaceInfo interfaceInfo, boolean add) {
-            if (interfaceInfo == null) {
+        if (interfaceInfo == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        String name = interfaceInfo.getName();
+        String description = interfaceInfo.getDescription();
+        String requestUrl = interfaceInfo.getUrl();
+        String requestHeader = interfaceInfo.getRequestHeader();
+        String responseHeader = interfaceInfo.getResponseHeader();
+        String method = interfaceInfo.getMethod();
+        // Long userid = interfaceInfo.getUserid();
+
+        String regex = "^(https?|ftp)://[^\\s/$.?#].[^\\s]*$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(requestUrl);
+        boolean b = matcher.matches();
+        if (!b) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "非法URL");
+        }
+        // 创建时，所有参数必须非空
+        if (add) {
+            if (StringUtils.isAnyBlank(name, description, requestUrl, requestHeader, responseHeader) || ObjectUtils.anyNull(method)) {
                 throw new BusinessException(ErrorCode.PARAMS_ERROR);
             }
-            String name = interfaceInfo.getName();
-            String description = interfaceInfo.getDescription();
-            String requestUrl = interfaceInfo.getUrl();
-            String requestHeader = interfaceInfo.getRequestHeader();
-            String responseHeader = interfaceInfo.getResponseHeader();
-            String method = interfaceInfo.getMethod();
-            // Long userid = interfaceInfo.getUserid();
-
-            // 创建时，所有参数必须非空
-            if (add) {
-                if (StringUtils.isAnyBlank(name, description, requestUrl, requestHeader, responseHeader) || ObjectUtils.anyNull(method)) {
-                    throw new BusinessException(ErrorCode.PARAMS_ERROR);
-                }
+            // url重复校验
+            try {
+                this.baseMapper.selectOne(new QueryWrapper<InterfaceInfo>().lambda().eq(InterfaceInfo::getUrl, interfaceInfo.getUrl()));
+            } catch (Exception e) {
+                throw new BusinessException(ErrorCode.DATA_REPEAT_ERROR, "当前请求接口已存在");
             }
-            if (StringUtils.isNotBlank(name) && name.length() > 8192) {
-                throw new BusinessException(ErrorCode.PARAMS_ERROR, "内容过长");
-            }
+        }
+        if (StringUtils.isNotBlank(name) && name.length() > 8192) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "内容过长");
+        }
     }
 
     @Override

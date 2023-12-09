@@ -14,6 +14,7 @@ public enum ErrorCode {
     WAIT_FOR_A_MINUTE(40013, "验证码发送时间间隔果断,请稍后!"),
     VALID_CODE_ERROR(40014, "验证码错误"),
     NOT_FOUND_ERROR(40400, "请求数据不存在"),
+    DATA_REPEAT_ERROR(40500, "数据重复"),
     FORBIDDEN_ERROR(40300, "禁止访问"),
     SYSTEM_ERROR(50000, "系统内部异常"),
     OPERATION_ERROR(50001, "操作失败"),
