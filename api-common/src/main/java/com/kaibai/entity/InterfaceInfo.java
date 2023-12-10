@@ -80,6 +80,11 @@ public class InterfaceInfo implements Serializable {
     private Integer status;
 
     /**
+     * 审核状态（0-未审核，1-审核通过，2-失败）
+     */
+    private Integer auditStatus;
+
+    /**
      * 请求人类型
      */
     private String method;
@@ -87,7 +92,7 @@ public class InterfaceInfo implements Serializable {
     /**
      * 用户名
      */
-    private Long userid;
+    private Long userId;
 
     /**
      * 创建时间

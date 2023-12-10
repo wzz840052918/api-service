@@ -4,9 +4,9 @@ spring:
   # DataSource Config
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.31.100:3306/api_service
-    username: root
-    password: 123456
+    url: jdbc:mysql://121.196.223.130:3306/api_service
+    username: develop
+    password: Wang2552293!
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
@@ -17,9 +17,9 @@ spring:
   # redis 配置
   redis:
     port: 6379
-    host: 192.168.31.100
+    host: 121.196.223.130
     database: 0
-    password: 123456
+    password: Wang2552293!
   mail:
     host: smtp.163.com
     username: wangzz2022@163.com
@@ -53,3 +53,12 @@ verify:
   code:
     email: 300 # 邮箱验证码默认有效期时间
     phone: 600 # 手机验证码默认有效期时间
+
+
+rocketmq:
+  name-server: 192.168.31.100:9876
+  producer:
+    group: my-producer-group
+  consumer:
+    group: deal-interface-info
+    topic: develop-upload-interface

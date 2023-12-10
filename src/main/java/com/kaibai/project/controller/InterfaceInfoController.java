@@ -17,6 +17,7 @@ import com.kaibai.project.model.dto.interfaceinfo.InterfaceInvokeRequest;
 import com.kaibai.project.service.InterfaceInfoService;
 import com.kaibai.project.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
@@ -55,6 +56,7 @@ public class InterfaceInfoController {
      * @return
      */
     @PostMapping("/add")
+    @AuthCheck(mustRole = "admin")
     public BaseResponse<Boolean> addInterfaceInfo(@RequestBody InterfaceInfoAddRequest interfaceInfoAddRequest, HttpServletRequest request) {
         if (interfaceInfoAddRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -83,6 +85,7 @@ public class InterfaceInfoController {
      * @return
      */
     @PostMapping("/delete")
+    @AuthCheck(mustRole = "admin")
     public BaseResponse<Boolean> deleteInterfaceInfo(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -286,4 +289,27 @@ public class InterfaceInfoController {
         return ResultUtils.success(aaa);
     }
 
+    /**
+     * 接口发布 - 开发者上传
+     *
+     * @param interfaceInfoAddRequest 包装id的类
+     * @return true/false
+     */
+    @PostMapping("/upload")
+    @AuthCheck(mustRole = "user")
+    public BaseResponse<Boolean> uploadInterfaceInfo(@RequestBody InterfaceInfoAddRequest interfaceInfoAddRequest) {
+        if (ObjectUtils.isEmpty(interfaceInfoAddRequest)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        InterfaceInfo interfaceInfo = new InterfaceInfo();
+        BeanUtils.copyProperties(interfaceInfoAddRequest, interfaceInfo);
+        try {
+            interfaceInfo.splitUrl();
+        } catch (MalformedURLException e) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "非法URL");
+        }
+        interfaceInfoService.validInterfaceInfo(interfaceInfo, true);
+        boolean result = interfaceInfoService.uploadInterfaceInfo(interfaceInfo);
+        return ResultUtils.success(result);
+    }
 }

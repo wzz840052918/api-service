@@ -65,8 +65,8 @@ public class EmailUtils {
         //设置收件人，寄件人
         try {
             messageHelper.setTo(email);
-            messageHelper.setFrom(username);
-            messageHelper.setSubject("注册blog验证码");
+            messageHelper.setFrom("天策API开放平台");
+            messageHelper.setSubject("验证码");
             messageHelper.setText(message, false);
         } catch (MessagingException e) {
             throw new BusinessException(ErrorCode.MESSAGE_SERVICE_ERROR);

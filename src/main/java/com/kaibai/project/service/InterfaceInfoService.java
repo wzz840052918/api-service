@@ -19,4 +19,11 @@ public interface InterfaceInfoService extends IService<InterfaceInfo> {
     void validInterfaceInfo(InterfaceInfo interfaceInfo, boolean condition);
 
     InterfaceInfo getInterfaceInfoByPathAndMethod(String path, String method);
+
+    /**
+     * 开发者发布接口信息
+     * @param interfaceInfo 接口信息
+     * @return true/false
+     */
+    boolean uploadInterfaceInfo(InterfaceInfo interfaceInfo);
 }

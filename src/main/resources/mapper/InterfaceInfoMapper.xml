@@ -15,6 +15,7 @@
             <result property="requestHeader" column="request_header" jdbcType="VARCHAR"/>
             <result property="responseHeader" column="response_header" jdbcType="VARCHAR"/>
             <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="auditStatus" column="audit_status" jdbcType="INTEGER"/>
             <result property="method" column="method" jdbcType="INTEGER"/>
             <result property="userid" column="userId" jdbcType="BIGINT"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>

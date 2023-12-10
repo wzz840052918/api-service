@@ -6,9 +6,11 @@ import com.kaibai.entity.InterfaceInfo;
 import com.kaibai.project.common.ErrorCode;
 import com.kaibai.project.exception.BusinessException;
 import com.kaibai.project.mapper.InterfaceInfoMapper;
+import com.kaibai.project.mq.MQProducer;
 import com.kaibai.project.service.InterfaceInfoService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.regex.Matcher;
@@ -22,6 +24,9 @@ import java.util.regex.Pattern;
 @Service
 public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, InterfaceInfo>
         implements InterfaceInfoService {
+
+    @Autowired
+    MQProducer producer;
 
     @Override
     public void validInterfaceInfo(InterfaceInfo interfaceInfo, boolean add) {
@@ -69,6 +74,14 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
         queryWrapper.eq("url", url);
         queryWrapper.eq("method", method);
         return this.baseMapper.selectOne(queryWrapper);
+    }
+
+    @Override
+    public boolean uploadInterfaceInfo(InterfaceInfo interfaceInfo) {
+        // 1. 将消息递送到RocketMQ
+        producer.convertAndSend(interfaceInfo);
+        // 2. 保存接口信息
+        return save(interfaceInfo);
     }
 }
 
