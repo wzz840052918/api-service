@@ -1,17 +1,23 @@
 package com.kaibai.project.service.impl;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kaibai.entity.InterfaceInfo;
 import com.kaibai.project.common.ErrorCode;
+import com.kaibai.project.enums.InterfaceAuditStatusEnum;
+import com.kaibai.project.enums.rocketmq.ApiTagsEnum;
+import com.kaibai.project.event.TransactionCommitSendMQEvent;
 import com.kaibai.project.exception.BusinessException;
 import com.kaibai.project.mapper.InterfaceInfoMapper;
-import com.kaibai.project.mq.MQProducer;
+import com.kaibai.project.properties.RocketmqCustomProperties;
 import com.kaibai.project.service.InterfaceInfoService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,7 +32,10 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
         implements InterfaceInfoService {
 
     @Autowired
-    MQProducer producer;
+    ApplicationEventPublisher applicationEventPublisher;
+
+    @Autowired
+    RocketmqCustomProperties rocketmqCustomProperties;
 
     @Override
     public void validInterfaceInfo(InterfaceInfo interfaceInfo, boolean add) {
@@ -77,11 +86,21 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean uploadInterfaceInfo(InterfaceInfo interfaceInfo) {
-        // 1. 将消息递送到RocketMQ
-        producer.convertAndSend(interfaceInfo);
-        // 2. 保存接口信息
-        return save(interfaceInfo);
+        // 1. 保存接口信息
+        boolean save = save(interfaceInfo);
+        // 2. 发布事务事件，在事务提交后
+        applicationEventPublisher.publishEvent(new TransactionCommitSendMQEvent("用户上传接口", rocketmqCustomProperties.getApiTopic(), ApiTagsEnum.USER_UPLOAD_INTERFACE.name(), JSONUtil.toJsonStr(interfaceInfo)));
+        return save;
+    }
+
+    @Override
+    public boolean updateAuditStatus(Long id) {
+        InterfaceInfo interfaceInfo = new InterfaceInfo();
+        interfaceInfo.setId(id);
+        interfaceInfo.setAuditStatus(InterfaceAuditStatusEnum.AUDITED.getStatus());
+        return updateById(interfaceInfo);
     }
 }
 

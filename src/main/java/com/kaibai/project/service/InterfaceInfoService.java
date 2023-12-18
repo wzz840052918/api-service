@@ -26,4 +26,11 @@ public interface InterfaceInfoService extends IService<InterfaceInfo> {
      * @return true/false
      */
     boolean uploadInterfaceInfo(InterfaceInfo interfaceInfo);
+
+    /**
+     * 更新接口的审核状态
+     * @param id 接口id
+     * @return true/false
+     */
+    boolean updateAuditStatus(Long id);
 }

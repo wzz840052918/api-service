@@ -296,7 +296,7 @@ public class InterfaceInfoController {
      * @return true/false
      */
     @PostMapping("/upload")
-    @AuthCheck(mustRole = "user")
+    @AuthCheck(anyRole = {"user", "admin"})
     public BaseResponse<Boolean> uploadInterfaceInfo(@RequestBody InterfaceInfoAddRequest interfaceInfoAddRequest) {
         if (ObjectUtils.isEmpty(interfaceInfoAddRequest)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
