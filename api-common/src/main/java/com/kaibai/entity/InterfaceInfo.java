@@ -75,6 +75,11 @@ public class InterfaceInfo implements Serializable {
     private String requestParams;
 
     /**
+     * 请求体
+     */
+    private String body;
+
+    /**
      * 接口状态（0-关闭，1-开启）
      */
     private Integer status;

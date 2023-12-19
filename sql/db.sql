@@ -11,10 +11,11 @@ create table if not exists api_service.`interface_info`
     `request_header`  text                               not null comment '请求头',
     `response_header` text                               not null comment '响应头',
     `request_params`  text comment '请求参数',
+    `body`            text                               comment '请求体',
     `status`          int      default 0                 not null comment '接口状态（0-关闭，1-开启）',
     `audit_status`    tinyint  default 0                 not null comment '审核状态（0-未审核，1-审核通过，2-失败）',
     `method`          varchar(32)                        not null comment '请求类型',
-    `user_id`          bigint comment '用户名',
+    `user_id`         bigint comment '用户名',
     `create_time`     datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     `update_time`     datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     `is_deleted`      tinyint  default 0                 not null comment '是否删除(0-未删, 1-已删)'

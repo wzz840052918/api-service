@@ -69,12 +69,14 @@ public class InterfaceInfoListener implements RocketMQListener<MessageExt> {
         String requestHeader = interfaceInfo.getRequestHeader();
         Map<String, String> requestHeaderMap = JSONUtil.toBean(requestHeader, HashMap.class);
         Map<String, String> requestParamMap = JSONUtil.toBean(requestParams, HashMap.class);
+        HttpResponse response = null;
         switch (HttpMethod.valueOf(method)) {
             case POST:
-//                HttpRequest.post(url)
-//                        .addHeaders(requestHeaderMap)
-//                        .form(interfaceInfo.getForm())
-//                        .execute();
+                response = HttpRequest.post(url)
+                        .addHeaders(requestHeaderMap)
+                        .form(interfaceInfo.getBody())
+                        .execute();
+
                 break;
             case GET:
                 StringBuilder strBuilder = new StringBuilder();
@@ -84,21 +86,23 @@ public class InterfaceInfoListener implements RocketMQListener<MessageExt> {
                 if (strBuilder.length() > 0) {
                     strBuilder.deleteCharAt(strBuilder.length() - 1);
                 }
-                HttpResponse response = HttpRequest.get(url)
+                response = HttpRequest.get(url)
                         .timeout(5000)
                         .addHeaders(requestHeaderMap)
                         .body(strBuilder.toString())
                         .execute();
-                int status = response.getStatus();
-                if (HttpStatus.OK.value() == status) {
-                    // 修改接口状态 ， 将auditStatus设置为1
-                    interfaceInfoService.updateAuditStatus(interfaceInfo.getId());
-                }
-                break;
             default:
                 // 一般不会进到这里，保存接口时会有类型判断
                 log.error("错误的HttpMethod: [{}]", method);
                 break;
+        }
+        int status = response.getStatus();
+        if (HttpStatus.OK.value() == status) {
+            // 修改接口状态 ， 将auditStatus设置为1
+            interfaceInfoService.updateAuditStatus(interfaceInfo.getId());
+            log.info("接口校验完毕，已更改状态: 接口id:{},接口url:{}", interfaceInfo.getId(), url);
+        } else {
+            log.info("接口校验失败，接口id:{}, 接口url:{}", interfaceInfo.getId(), url);
         }
     }
 }

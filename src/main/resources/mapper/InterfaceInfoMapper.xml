@@ -14,10 +14,11 @@
             <result property="path" column="path" jdbcType="VARCHAR"/>
             <result property="requestHeader" column="request_header" jdbcType="VARCHAR"/>
             <result property="responseHeader" column="response_header" jdbcType="VARCHAR"/>
+            <result property="body" column="body" jdbcType="VARCHAR"/>
             <result property="status" column="status" jdbcType="INTEGER"/>
             <result property="auditStatus" column="audit_status" jdbcType="INTEGER"/>
             <result property="method" column="method" jdbcType="INTEGER"/>
-            <result property="userid" column="userId" jdbcType="BIGINT"/>
+            <result property="userId" column="userId" jdbcType="BIGINT"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
             <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
@@ -25,7 +26,7 @@
 
     <sql id="Base_Column_List">
         id,name,description,
-        url,request_header,response_header,
+        url,request_header,response_header,body,
         status,method,userId,
         create_time,update_time,is_deleted
     </sql>

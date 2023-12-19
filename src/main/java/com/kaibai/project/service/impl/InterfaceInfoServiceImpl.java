@@ -47,6 +47,7 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
         String requestUrl = interfaceInfo.getUrl();
         String requestHeader = interfaceInfo.getRequestHeader();
         String responseHeader = interfaceInfo.getResponseHeader();
+        String body = interfaceInfo.getBody();
         String method = interfaceInfo.getMethod();
         // Long userid = interfaceInfo.getUserid();
 
@@ -59,7 +60,7 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
         }
         // 创建时，所有参数必须非空
         if (add) {
-            if (StringUtils.isAnyBlank(name, description, requestUrl, requestHeader, responseHeader) || ObjectUtils.anyNull(method)) {
+            if (StringUtils.isAnyBlank(name, description, requestUrl, requestHeader, responseHeader) || ObjectUtils.anyNull(method, body)) {
                 throw new BusinessException(ErrorCode.PARAMS_ERROR);
             }
             // url重复校验
